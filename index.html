@@ -23,6 +23,11 @@
 
     const playerManager = context.getPlayerManager();
 
+    playerManager.setMessageInterceptor(cast.framework.messages.MessageType.LOAD, loadRequestData => {
+            loadRequestData.media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
+            return loadRequestData;
+    });
+
     //context.start({playbackConfig: getPlaybackConfig()});
     context.start();
 
