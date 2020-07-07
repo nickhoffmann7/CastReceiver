@@ -27,10 +27,11 @@
         cast.framework.messages.MessageType.LOAD,
         request => { /* cast.framework.messages.LoadRequestData */
             let metadata = request.media.metadata;
-            console.log(metadata.TITLE);
-            console.log(metadata.CONTENT);
+            console.log("TITLE: " + metadata.TITLE);
+            console.log("CONTENT: " + metadata.CONTENT);
             if (metadata.CONTENT != null) {
                 request.media.contentId = createTextFile(metadata.CONTENT);
+                console.log("CONTENTID: " + request.media.contentId);
             }
             return request;
         });
