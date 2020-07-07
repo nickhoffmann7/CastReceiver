@@ -23,6 +23,18 @@
 
     const playerManager = context.getPlayerManager();
 
+    playerManager.setMessageInterceptor(
+        cast.framework.messages.MessageType.LOAD,
+        request => { /* cast.framework.messages.LoadRequestData */
+            let metadata = request.media.metadata;
+            console.log(metadata.TITLE);
+            console.log(metadata.CONTENT);
+            if (metadata.CONTENT != null) {
+                request.media.contentId = createTextFile(metadata.CONTENT);
+            }
+            return request;
+        });
+
     //context.start({playbackConfig: getPlaybackConfig()});
     context.start();
 
@@ -32,6 +44,17 @@
         playbackConfig.autoResumeNumberOfSegments = 10;
         return playbackConfig;
     }
+
+    let textFile = null;
+
+    function createTextFile(text) {
+        var data = new Blob([text], {type: 'text/plain'});
+        if (textFile !== null) {
+            window.URL.revokeObjectURL(textFile);
+        }
+        textFile = window.URL.createObjectURL(data);
+        return textFile;
+    };
 </script>
 
 </body>
