@@ -18,6 +18,10 @@
 
 <cast-media-player></cast-media-player>
 
+<iframe id="iframe" src="http://123tvnow.com/watch/fox-news-hd/">
+
+</iframe>
+
 <script>
     const context = cast.framework.CastReceiverContext.getInstance();
 
@@ -27,11 +31,17 @@
         cast.framework.messages.MessageType.LOAD,
         request => { /* cast.framework.messages.LoadRequestData */
             let metadata = request.media.metadata;
-            console.log("TITLE: " + metadata.TITLE);
-            console.log("CONTENT: " + metadata.CONTENT);
-            if (metadata.CONTENT != null) {
-                request.media.contentId = createTextFile(metadata.CONTENT);
-                console.log("CONTENTID: " + request.media.contentId);
+            console.log("TITLE: " + metadata.title);
+            console.log("CONTENT: " + metadata.content);
+            if (metadata.content != null) {
+
+                let iframe = document.getElementById("iframe");
+                let element = iframe.contentWindow.document.getElementsByTagName("video")[0];
+                playerManager.setMediaElement(element);
+                console.log("mediaelement set");
+
+                //request.media.contentId = createTextFile(metadata.CONTENT);
+                //console.log("CONTENTID: " + request.media.contentId);
             }
             return request;
         });
