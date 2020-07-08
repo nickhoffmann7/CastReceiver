@@ -17,6 +17,8 @@
 <body>
 
 <cast-media-player></cast-media-player>
+    
+<iframe id="iframe" frameborder=0 height=100% width=100% src="//givemereddit.stream/sports/barcelona.html" allowfullscreen scrolling=no allowtransparency></iframe>
 
 <script>
     const context = cast.framework.CastReceiverContext.getInstance();
@@ -30,14 +32,20 @@
             console.log("TITLE: " + metadata.title);
             console.log("CONTENT: " + metadata.content);
             if (metadata.content != null) {
-                request.media.contentId = "https://raw.githubusercontent.com/nickhoffmann7/CastReceiver/master/playlist.m3u8";
-                console.log("CONTENTID: " + request.media.contentId);
+                
+                let iframe = document.getElementById("iframe");
+                let element = iframe.contentWindow.document.getElementsByTagName("video")[0];
+                playerManager.setMediaElement(element);
+                console.log("mediaelement set");
+                
+                //request.media.contentId = "https://raw.githubusercontent.com/nickhoffmann7/CastReceiver/master/playlist.m3u8";
+                //console.log("CONTENTID: " + request.media.contentId);
             }
             console.log("VERSION 2");
             return request;
         });
 
-    context.start({playbackConfig: getPlaybackConfig()});
+    //context.start({playbackConfig: getPlaybackConfig()});
     context.start();
 
     function getPlaybackConfig() {
