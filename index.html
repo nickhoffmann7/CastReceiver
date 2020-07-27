@@ -8,7 +8,6 @@
 
     <style>
         cast-media-player {
-            transform: rotate(90deg);
             --progress-color: rgb(120, 0, 46);
             --splash-image: url('loader.svg');
         }
@@ -24,17 +23,15 @@
 
     const playerManager = context.getPlayerManager();
 
+    /*
     playerManager.setMessageInterceptor(
         cast.framework.messages.MessageType.LOAD,
         request => {
             let metadata = request.media.metadata;
-            if (metadata.content != null) {  
-                request.media.contentId = "https://raw.githubusercontent.com/nickhoffmann7/CastReceiver/master/playlist.m3u8";
-            }
-            console.log("LOAD TITLE: " + metadata.title);
-            console.log("LOAD CONTENTID: " + request.media.contentId);
             return request;
-        });
+        }
+    );
+    */
 
     context.start({playbackConfig: getPlaybackConfig()});
     //context.start();
@@ -42,7 +39,7 @@
     function getPlaybackConfig() {
         const playbackConfig = new cast.framework.PlaybackConfig();
         //playbackConfig.autoPauseDuration = 2;
-        playbackConfig.autoResumeDuration = 5;
+        playbackConfig.autoResumeDuration = 6;
         //playbackConfig.autoResumeNumberOfSegments = 1;
         //playbackConfig.segmentRequestRetryLimit = 0;
         return playbackConfig;
