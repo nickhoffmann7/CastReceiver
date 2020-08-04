@@ -38,10 +38,16 @@
 
     function getPlaybackConfig() {
         const playbackConfig = new cast.framework.PlaybackConfig();
+        
         //playbackConfig.autoPauseDuration = 2;
         playbackConfig.autoResumeDuration = 6;
         //playbackConfig.autoResumeNumberOfSegments = 1;
         //playbackConfig.segmentRequestRetryLimit = 0;
+        
+        playbackConfig.manifestRequestHandler = requestInfo => {
+            requestInfo.withCredentials = true;
+        };
+        
         return playbackConfig;
     }
 </script>
