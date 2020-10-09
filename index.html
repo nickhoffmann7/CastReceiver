@@ -9,7 +9,7 @@
     <style>
         cast-media-player {
             --progress-color: rgb(120, 0, 46);
-            --splash-image: url('loader2.svg');
+            --splash-image: url('loader.svg');
         }
     </style>
 </head>
@@ -45,7 +45,7 @@
         //playbackConfig.segmentRequestRetryLimit = 0;
         
         playbackConfig.manifestRequestHandler = requestInfo => {
-            requestInfo.withCredentials = false;
+            requestInfo.withCredentials = true;
         };
         
         return playbackConfig;
