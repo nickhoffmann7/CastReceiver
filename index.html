@@ -45,7 +45,7 @@
         //playbackConfig.segmentRequestRetryLimit = 0;
         
         playbackConfig.manifestRequestHandler = requestInfo => {
-            requestInfo.withCredentials = true;
+            requestInfo.withCredentials = false;
         };
         
         return playbackConfig;
