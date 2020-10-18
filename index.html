@@ -26,8 +26,10 @@
     context.addCustomMessageListener(
         channel,
         message => {
-            console.log(message);
-            context.sendCustomMessage(channel, "undefined", "got the message");
+            console.log(message.data);
+
+            let response = {message: "got it"};
+            context.sendCustomMessage(channel, "undefined", JSON.stringify(response));
         }
     );
 
