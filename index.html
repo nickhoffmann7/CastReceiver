@@ -28,7 +28,7 @@
         message => {
             console.log(message.data);
 
-            let response = {message: "got it"};
+            let response = {"message": "ok got it"};
             context.sendCustomMessage(channel, "undefined", JSON.stringify(response));
         }
     );
