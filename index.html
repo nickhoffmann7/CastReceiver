@@ -21,8 +21,9 @@
 <script src="converter.js"></script>
 
 <script>
-    console.log("started 1.0");
+    console.log("started 2.0");
     const context = cast.framework.CastReceiverContext.getInstance();
+    const playerManager = context.getPlayerManager();
 
     const channel = "urn:x-cast:streamcast"
 
@@ -32,18 +33,30 @@
             let data = message.data;
 
             let subs = srt2webvtt(data.message)
-            console.log(subs);
+
+            var blob = new Blob(subs, {type: 'text/vtt'});
+            let url = window.URL.createObjectURL(blob);
+            console.log(url);
+
+            let track = cast.framework.messages.Track(9, cast.framework.messages.TrackType.TEXT);
+            track.name = "opensubtitles";
+            track.language = "en-US";
+            track.trackContentId = url;
+
+            let tracksManager = playerManager.getTextTracksManager();
+            tracksManager.addTracks(track);
 
             //let response = {"message": "ok got it"};
             context.sendCustomMessage(channel, "undefined", "test123");
         }
     );
 
-    const playerManager = context.getPlayerManager();
     playerManager.setMessageInterceptor(
         cast.framework.messages.MessageType.LOAD,
         requestData => {
             //
+            let tracks = requestData.media.tracks;
+            console.log(tracks);
             return requestData;
         }
     );
