@@ -21,7 +21,7 @@
 <script src="converter.js"></script>
 
 <script>
-    console.log("started 5.0");
+    console.log("started 6.0");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
@@ -50,7 +50,7 @@
 
             console.log("track created")
 
-            tracksManager.addTracks(track);
+            tracksManager.addTracks([track]);
 
             console.log("track added")
 
