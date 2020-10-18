@@ -18,7 +18,10 @@
 
 <cast-media-player></cast-media-player>
 
+<script src="converter.js"></script>
+
 <script>
+    console.log("started 1.0");
     const context = cast.framework.CastReceiverContext.getInstance();
 
     const channel = "urn:x-cast:streamcast"
@@ -27,11 +30,12 @@
         channel,
         message => {
             let data = message.data;
-            console.log(data.message);
-            console.log(data["message"]);
 
-            let response = {"message": "ok got it"};
-            context.sendCustomMessage(channel, "undefined", JSON.stringify(response));
+            let subs = srt2webvtt(data.message)
+            console.log(subs);
+
+            //let response = {"message": "ok got it"};
+            context.sendCustomMessage(channel, "undefined", "test123");
         }
     );
 
