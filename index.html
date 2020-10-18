@@ -21,7 +21,7 @@
 <script src="converter.js"></script>
 
 <script>
-    console.log("started 6.0");
+    console.log("started 7.0");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
@@ -32,9 +32,16 @@
         message => {
             let data = message.data;
 
-            let subs = srt2webvtt(data.message)
+            let subs = srt2webvtt(data.message);
+            subs = "WEBVTT\n" +
+                "\n" +
+                "00:00:00.500 --> 00:00:02.000\n" +
+                "The Web is always changing\n" +
+                "\n" +
+                "00:00:02.500 --> 00:00:04.300\n" +
+                "and the way we access it is changing";
 
-            let blob = new Blob([subs], {type: 'text/vtt'});
+            let blob = new Blob([subs], {type: "text/vtt"});
             let url = URL.createObjectURL(blob);
             console.log("url: " + url);
 
@@ -45,7 +52,7 @@
             track.type = cast.framework.messages.TrackType.TEXT;
             track.subtype = "SUBTITLES";
             track.name = "opensubtitles";
-            //track.language = "en-US";
+            track.language = "en-US";
             track.trackContentId = url;
 
             console.log("track created")
@@ -54,10 +61,12 @@
 
             console.log("track added")
 
-            console.log(tracksManager.getTracks())
+            tracksManager.setActiveByIds([9]);
+
+            console.log("track active")
 
             //let response = {"message": "ok got it"};
-            context.sendCustomMessage(channel, "undefined", "test123");
+            //context.sendCustomMessage(channel, "undefined", "test123");
         }
     );
 
