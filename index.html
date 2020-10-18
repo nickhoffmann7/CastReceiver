@@ -21,13 +21,21 @@
 <script>
     const context = cast.framework.CastReceiverContext.getInstance();
 
-    const playerManager = context.getPlayerManager();
+    const channel = "urn:x-cast:streamcast"
 
-    
+    context.addCustomMessageListener(
+        channel,
+        message => {
+            console.log(message);
+            context.sendCustomMessage(channel, "undefined", "got the message");
+        }
+    );
+
+    const playerManager = context.getPlayerManager();
     playerManager.setMessageInterceptor(
         cast.framework.messages.MessageType.LOAD,
         requestData => {
-            requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.MPEG2_TS;
+            //
             return requestData;
         }
     );
@@ -37,18 +45,18 @@
 
     function getPlaybackConfig() {
         const playbackConfig = new cast.framework.PlaybackConfig();
-        
+
         //playbackConfig.autoPauseDuration = 2;
         playbackConfig.autoResumeDuration = 5;
         //playbackConfig.autoResumeNumberOfSegments = 1;
         //playbackConfig.segmentRequestRetryLimit = 0;
-        
+
         /*
         playbackConfig.manifestRequestHandler = requestInfo => {
             requestInfo.withCredentials = true;
         };
         */
-        
+
         return playbackConfig;
     }
 </script>
