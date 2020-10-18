@@ -34,9 +34,9 @@
 
             let subs = srt2webvtt(data.message)
 
-            var blob = new Blob(subs, {type: 'text/vtt'});
-            let url = window.URL.createObjectURL(blob);
-            console.log(url);
+            let blob = new Blob([subs], {type: 'text/vtt'});
+            let url = URL.createObjectURL(blob);
+            console.log("url: " + url);
 
             let track = cast.framework.messages.Track(9, cast.framework.messages.TrackType.TEXT);
             track.name = "opensubtitles";
@@ -55,8 +55,6 @@
         cast.framework.messages.MessageType.LOAD,
         requestData => {
             //
-            let tracks = requestData.media.tracks;
-            console.log(tracks);
             return requestData;
         }
     );
