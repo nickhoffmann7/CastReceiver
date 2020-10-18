@@ -21,7 +21,7 @@
 <script src="converter.js"></script>
 
 <script>
-    console.log("started 7.0");
+    console.log("started 9.0");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
@@ -33,14 +33,7 @@
             let data = message.data;
 
             let subs = srt2webvtt(data.message);
-            subs = "WEBVTT\n" +
-                "\n" +
-                "00:00:00.500 --> 00:00:02.000\n" +
-                "The Web is always changing\n" +
-                "\n" +
-                "00:00:02.500 --> 00:00:04.300\n" +
-                "and the way we access it is changing";
-
+            
             let blob = new Blob([subs], {type: "text/vtt"});
             let url = URL.createObjectURL(blob);
             console.log("url: " + url);
@@ -65,8 +58,8 @@
 
             console.log("track active")
 
-            //let response = {"message": "ok got it"};
-            //context.sendCustomMessage(channel, "undefined", "test123");
+            let response = {"message": "ok got it"};
+            context.sendCustomMessage(channel, undefined, "ok got it");
         }
     );
 
