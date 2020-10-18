@@ -23,18 +23,17 @@
 
     const playerManager = context.getPlayerManager();
 
-    /*
+    
     playerManager.setMessageInterceptor(
         cast.framework.messages.MessageType.LOAD,
-        request => {
-            let metadata = request.media.metadata;
-            return request;
+        requestData => {
+            requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.MPEG2_TS;
+            return requestData;
         }
     );
-    */
 
-    context.start({playbackConfig: getPlaybackConfig()});
-    //context.start();
+    //context.start({playbackConfig: getPlaybackConfig()});
+    context.start();
 
     function getPlaybackConfig() {
         const playbackConfig = new cast.framework.PlaybackConfig();
