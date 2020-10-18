@@ -21,7 +21,7 @@
 <script src="converter.js"></script>
 
 <script>
-    console.log("started 2.0");
+    console.log("started 3.0");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
@@ -38,7 +38,7 @@
             let url = URL.createObjectURL(blob);
             console.log("url: " + url);
 
-            let track = cast.framework.messages.Track(9, cast.framework.messages.TrackType.TEXT);
+            let track = new cast.framework.messages.Track(9, cast.framework.messages.TrackType.TEXT);
             track.name = "opensubtitles";
             track.language = "en-US";
             track.trackContentId = url;
