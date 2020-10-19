@@ -9,7 +9,7 @@
     <style>
         cast-media-player {
             --progress-color: rgb(120, 0, 46);
-            --splash-image: url('loader2.svg');
+            --splash-image: url('loader.svg');
         }
     </style>
 </head>
@@ -18,25 +18,22 @@
 
 <cast-media-player></cast-media-player>
 
-<script src="converter.js"></script>
-
 <script>
     console.log("started 9.0");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
-    const channel = "urn:x-cast:streamcast"
+    const channel = "urn:x-cast:streamcast";
 
     context.addCustomMessageListener(
         channel,
         message => {
             let data = message.data;
+            let subs = data.message;
 
-            let subs = srt2webvtt(data.message);
-            
             let blob = new Blob([subs], {type: "text/vtt"});
             let url = URL.createObjectURL(blob);
-            console.log("url: " + url);
+            console.log("url created: " + url);
 
             let tracksManager = playerManager.getTextTracksManager();
 
@@ -54,11 +51,7 @@
 
             console.log("track added")
 
-            tracksManager.setActiveByIds([9]);
-
-            console.log("track active")
-
-            let response = {"message": "ok got it"};
+            //let response = {"message": "ok got it"};
             context.sendCustomMessage(channel, undefined, "ok got it");
         }
     );
