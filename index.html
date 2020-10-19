@@ -19,7 +19,7 @@
 <cast-media-player></cast-media-player>
 
 <script>
-    console.log("started 1.0");
+    console.log("started 1.1");
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
@@ -29,11 +29,13 @@
         channel,
         message => {
             let data = message.data;
+
             let subs = data.message;
+            console.log("subs received: " + subs)
 
             let blob = new Blob([subs], {type: "text/vtt"});
             let url = URL.createObjectURL(blob);
-            console.log("url created: " + url);
+            console.log("blob url created: " + url);
 
             let tracksManager = playerManager.getTextTracksManager();
 
