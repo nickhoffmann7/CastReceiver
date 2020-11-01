@@ -25,12 +25,41 @@
 
     const channel = "urn:x-cast:streamcast";
 
+    let hlsformat = false;
+
     context.addCustomMessageListener(
         channel,
         message => {
             let data = message.data;
 
-            let subs = data.message;
+            let msg = data.message;
+
+            console.log("received message: " + msg);
+
+            if (msg.includes("hlsformat=")) {
+                hlsformat = (msg === "hlsformat=true");
+
+            } else if (msg.includes("cookies=")) {
+                let enabled = (msg === "cookies=true");
+
+                let playbackConfig = Object.assign(new cast.framework.PlaybackConfig(), playerManager.getPlaybackConfig());
+                playbackConfig.manifestRequestHandler = requestInfo => {
+                    requestInfo.withCredentials = enabled;
+                };
+                playbackConfig.segmentRequestHandler = requestInfo => {
+                    requestInfo.withCredentials = enabled;
+                };
+                playbackConfig.licenseRequestHandler = requestInfo => {
+                    requestInfo.withCredentials = enabled;
+                };
+
+                playerManager.setPlaybackConfig(playbackConfig);
+            }
+
+            context.sendCustomMessage(channel, undefined, "ok done: " + msg);
+
+
+            /*
             console.log("subs received: " + subs)
 
             let blob = new Blob([subs], {type: "text/vtt"});
@@ -52,16 +81,24 @@
             tracksManager.addTracks([track]);
 
             console.log("track added")
+            */
 
             //let response = {"message": "ok got it"};
-            context.sendCustomMessage(channel, undefined, "ok got it");
+            //context.sendCustomMessage(channel, undefined, "ok got it: " + msg);
         }
     );
 
     playerManager.setMessageInterceptor(
         cast.framework.messages.MessageType.LOAD,
         requestData => {
-            //
+
+            if (hlsformat) {
+                requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.MPEG2_TS;
+            } else {
+                requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
+            }
+
+            console.log(playerManager.getPlaybackConfig());
             return requestData;
         }
     );
