@@ -19,92 +19,72 @@
 <cast-media-player></cast-media-player>
 
 <script>
-    console.log("started 1.1");
+    console.log("started 2.0");
+
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
 
+    console.log(context.getDeviceCapabilities());
+
+    //system error listener
+    context.addEventListener(
+        cast.framework.system.EventType.ERROR,
+        event => {
+
+            let message = "system error: " + event;
+            console.log(message);
+
+            context.sendCustomMessage(channel, undefined, message);
+        }
+    );
+
+    //player error listener
+    let tryHlsFix = false;
+    playerManager.addEventListener(
+        cast.framework.events.EventType.ERROR,
+        event => {
+
+            let code = event.detailedErrorCode;
+            let error = event.error;
+            let reason = event.reason;
+
+            let message = "player error: " + code + " | " + error + " | " + reason;
+            console.log(message);
+
+            tryHlsFix = true;
+            console.log("tryHlsFix=true");
+
+            context.sendCustomMessage(channel, undefined, message);
+        }
+    );
+
+    //message channel
     const channel = "urn:x-cast:streamcast";
-
-    let hlsformat = false;
-
     context.addCustomMessageListener(
         channel,
-        message => {
-            let data = message.data;
+        event => {
 
-            let msg = data.message;
+            console.log("received custom message: " + event);
 
-            console.log("received message: " + msg);
+            let data = event.data;
+            let message = data.message;
 
-            if (msg.includes("hlsformat=")) {
-                hlsformat = (msg === "hlsformat=true");
-
-            } else if (msg.includes("cookies=")) {
-                let enabled = (msg === "cookies=true");
-
-                let playbackConfig = Object.assign(new cast.framework.PlaybackConfig(), playerManager.getPlaybackConfig());
-                playbackConfig.manifestRequestHandler = requestInfo => {
-                    requestInfo.withCredentials = enabled;
-                };
-                playbackConfig.segmentRequestHandler = requestInfo => {
-                    requestInfo.withCredentials = enabled;
-                };
-                playbackConfig.licenseRequestHandler = requestInfo => {
-                    requestInfo.withCredentials = enabled;
-                };
-
-                playerManager.setPlaybackConfig(playbackConfig);
-            }
-
-            context.sendCustomMessage(channel, undefined, "ok done: " + msg);
-
-
-            /*
-            console.log("subs received: " + subs)
-
-            let blob = new Blob([subs], {type: "text/vtt"});
-            let url = URL.createObjectURL(blob);
-            console.log("blob url created: " + url);
-
-            let tracksManager = playerManager.getTextTracksManager();
-
-            let track = tracksManager.createTrack();
-            track.trackId = 9;
-            track.type = cast.framework.messages.TrackType.TEXT;
-            track.subtype = "SUBTITLES";
-            track.name = "opensubtitles";
-            track.language = "en-US";
-            track.trackContentId = url;
-
-            console.log("track created")
-
-            tracksManager.addTracks([track]);
-
-            console.log("track added")
-            */
-
-            //let response = {"message": "ok got it"};
-            //context.sendCustomMessage(channel, undefined, "ok got it: " + msg);
+            console.log("received message: " + message);
         }
     );
 
-    playerManager.setMessageInterceptor(
-        cast.framework.messages.MessageType.LOAD,
-        requestData => {
+    if (tryHlsFix) {
 
-            if (hlsformat) {
-                requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.MPEG2_TS;
-            } else {
-                requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
+        playerManager.setMessageInterceptor(
+            cast.framework.messages.MessageType.LOAD,
+            requestData => {
+                requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
+                return requestData;
             }
+        );
+    }
 
-            console.log(playerManager.getPlaybackConfig());
-            return requestData;
-        }
-    );
-
-    //context.start({playbackConfig: getPlaybackConfig()});
-    context.start();
+    context.start(/*{playbackConfig: getPlaybackConfig()}*/);
 
     function getPlaybackConfig() {
         const playbackConfig = new cast.framework.PlaybackConfig();
