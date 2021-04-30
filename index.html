@@ -19,7 +19,7 @@
 <cast-media-player></cast-media-player>
 
 <script>
-    console.log("started 2.0");
+    console.log("started 3.0");
 
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
@@ -31,10 +31,8 @@
         cast.framework.system.EventType.ERROR,
         event => {
 
-            let message = "system error: " + event;
-            console.log(message);
-
-            context.sendCustomMessage(channel, undefined, message);
+            console.log("system error:");
+            console.log(event);
         }
     );
 
@@ -44,18 +42,11 @@
         cast.framework.events.EventType.ERROR,
         event => {
 
-            let code = event.detailedErrorCode;
-            let error = event.error;
-            let reason = event.reason;
-
-            let message = "player error: " + code + " | " + error + " | " + reason;
-            console.log(code);
-            console.log(error);
-            console.log(reason);
-
             tryHlsFix = true;
             console.log("tryHlsFix=true");
 
+            let message = "player error: " + event.detailedErrorCode;
+            console.log(event);
             context.sendCustomMessage(channel, undefined, message);
         }
     );
@@ -76,11 +67,13 @@
     );
 
     if (tryHlsFix) {
-
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
             requestData => {
+                console.log("loaded " + requestData.media.contentId + " with type " + requestData.media.contentType);
+                console.log(requestData.media);
                 requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
+                console.log(requestData.media);
                 return requestData;
             }
         );
