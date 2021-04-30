@@ -19,7 +19,7 @@
 <cast-media-player></cast-media-player>
 
 <script>
-    console.log("started 3.0");
+    console.log("started 4.0");
 
     const context = cast.framework.CastReceiverContext.getInstance();
     const playerManager = context.getPlayerManager();
@@ -43,10 +43,11 @@
         event => {
 
             tryHlsFix = true;
-            console.log("tryHlsFix=true");
 
             let message = "player error: " + event.detailedErrorCode;
+            console.log(message);
             console.log(event);
+
             context.sendCustomMessage(channel, undefined, message);
         }
     );
@@ -66,18 +67,22 @@
         }
     );
 
-    if (tryHlsFix) {
-        playerManager.setMessageInterceptor(
-            cast.framework.messages.MessageType.LOAD,
-            requestData => {
-                console.log("loaded " + requestData.media.contentId + " with type " + requestData.media.contentType);
-                console.log(requestData.media);
+    playerManager.setMessageInterceptor(
+        cast.framework.messages.MessageType.LOAD,
+        requestData => {
+
+            console.log("loaded " + requestData.media.contentId + " with type " + requestData.media.contentType);
+            console.log(requestData.media);
+
+            console.log("tryHlsFix=" + tryHlsFix);
+            if (tryHlsFix) {
                 requestData.media.hlsVideoSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
                 console.log(requestData.media);
-                return requestData;
             }
-        );
-    }
+
+            return requestData;
+        }
+    );
 
     context.start(/*{playbackConfig: getPlaybackConfig()}*/);
 
